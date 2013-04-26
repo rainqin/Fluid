@@ -6,7 +6,7 @@
 using namespace std;
 
 #define M_PI 3.1415926
-#define myScope 0.55
+#define myScope 0.52
 
 GLfloat viewX = 0;
 GLfloat xrotate = 0, yrotate = 0;
@@ -21,7 +21,7 @@ GLboolean mousemdown = GL_FALSE;
 
 int wid = 8;
 int len = 8;
-int hei = 16;
+int hei = 8;
 long particleNum = wid * len * hei;
 int mousex, mousey;
 Camera* camera;
@@ -36,7 +36,7 @@ void init(void) {
 	for (int i = 0; i < len; i++) {
 		for (int j = 0; j < wid; j++) {
 			for (int z = 0; z < hei; z++) {
-				particles[i * len * wid + j * wid + z].position = make_vector<float>((i - 0 / 2) * 0.8, (z - 0 / 2) * 0.8, (j - 0 / 2) * 0.8); 
+				particles[i * len * wid + j * wid + z].position = make_vector<float>((i - len/2) * 0.8, (z - 0 / 2) * 0.8, (j - wid/2) * 0.8); 
 			}
 		}
 	}
@@ -157,7 +157,7 @@ void release() {
 void draw() {
 	
 	glColor3f(0.0, 0.0, 0.0);
-	glutWireCube(5);
+	glutWireCube(4);
 
 	field->CalculateField();
 

@@ -4,11 +4,11 @@
 #include <iostream>
 
 #define delta_t 0.001
-#define damping 0.7
+#define damping 0
 
 Particle::Particle(){
 	inFieldCount = 0;
-	pNum = 8 * 8 * 16;
+	pNum = 8 * 8 * 8;
 	mass = 5.0;
 	force = make_vector(0.0, 0.0, 0.0);
 	acc = make_vector(0.0, 0.0, 0.0);
@@ -42,22 +42,28 @@ void Particle::clearInField() {
 }
 
 void Particle::applyForce() {
-	float constraint = 5;
+	float constraint = 2;
 	Vector3f up = make_vector<float>(0.0, 1.0, 0.0);
 
 	acc = force / mass;
+
 	velocity += acc * delta_t;
+
+	int vYConstraint = 50;
+	if (velocity.y > vYConstraint) {
+		velocity.y = vYConstraint;
+	}
 	
 	position += velocity * delta_t;
 
-	if (position.y < 0) {
-		position.y = 0;
-		velocity.y = -0 * velocity.y;
+	if (position.y < -constraint) {
+		position.y = -constraint;
+		velocity.y = -damping * velocity.y;
 		//acc.y = -acc.y;
 	}
 
-	if (position.x < -1) {
-		position.x = -1;
+	if (position.x < -constraint) {
+		position.x = -constraint;
 		velocity.x = -damping * velocity.x;
 		acc.x = -acc.x;
 	}
@@ -67,9 +73,9 @@ void Particle::applyForce() {
 		velocity.x = -damping * velocity.x;
 		acc.x = -acc.x;
 	} 
-	if (position.z < -1) {
+	if (position.z < -constraint) {
 		//std::cout<<"Prev: "<<position<<std::endl;
-		position.z = -1;
+		position.z = -constraint;
 		velocity.z = -damping * velocity.z;
 		acc.z = -acc.z;
 		//std::cout<<"After: "<<position<<std::endl;

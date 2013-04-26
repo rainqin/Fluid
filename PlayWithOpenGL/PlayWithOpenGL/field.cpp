@@ -3,9 +3,9 @@
 #include <math.h>
 #define FACTOR	945/32/3.1415926
 #define density0 5.5
-#define my_k_far 200
-#define my_k_near 200
-#define my_u 15
+#define my_k_far 250
+#define my_k_near 250
+#define my_u 20
 #define my_sigma 0.3
 #define my_g 98 * 10
 
