@@ -1,0 +1,8 @@
+﻿Build started 4/26/2013 1:09:44 AM.
+     1>Project "C:\Users\yuzhu QIN\Documents\GitHub\FluidSimulation\PlayWithOpenGL\PlayWithOpenGL\PlayWithOpenGL.vcxproj" on node 2 (build target(s)).
+     1>C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\Platforms\Win32\Microsoft.Cpp.Win32.Targets(511,5): error MSB8008: 指定的平台工具集(v110)未安装或无效。请确保选择受支持的 PlatformToolset 值。
+     1>Done Building Project "C:\Users\yuzhu QIN\Documents\GitHub\FluidSimulation\PlayWithOpenGL\PlayWithOpenGL\PlayWithOpenGL.vcxproj" (build target(s)) -- FAILED.
+
+生成失败。
+
+Time Elapsed 00:00:00.01
