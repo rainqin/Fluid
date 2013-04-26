@@ -27,8 +27,10 @@ int mousex, mousey;
 Camera* camera;
 Particle* particles;
 Field* field;
+Vector3f gravityDirection;
 
 void init(void) {
+	gravityDirection = make_vector<float>(0.0, -1.0, 0.0);
 	camera = new Camera(loc_init, target_init, up_init);
 	particles = new Particle[particleNum]();
 	field = new Field(particles, myScope, particleNum);
@@ -49,9 +51,9 @@ void init(void) {
 	glEnable(GL_LIGHT1);
 
 	GLfloat background_light_position[] = {10, 10, 10, 1};
-	GLfloat background_light_ambient[] = {0.5, 0.5, 1, 1};
-	GLfloat background_light_diffuse[] = {0.5, 0.5, 1, 1};
-	GLfloat background_light_specular[] = {0.5, 0.5, 1, 1};
+	GLfloat background_light_ambient[] = {1, 1, 1, 1};
+	GLfloat background_light_diffuse[] = {1, 1, 1, 1};
+	GLfloat background_light_specular[] = {1, 1, 1, 1};
 
 	glLightfv(GL_LIGHT1, GL_POSITION, background_light_position);
 	glLightfv(GL_LIGHT1, GL_AMBIENT,  background_light_ambient);
@@ -135,6 +137,8 @@ void MouseMotion(int x, int y)
 void keyboard (unsigned char key, int x, int y)
 {
 	switch (key) {
+	case 'c':
+		gravityDirection = normalize(camera->GetLoc() - make_vector<float>(0.0, 0.0, 0.0));
 	case 'w':
 		camera->LenCamera(-0.5);
 		break;
@@ -157,33 +161,50 @@ void release() {
 void draw() {
 	
 	glColor3f(0.0, 0.0, 0.0);
-	glutWireCube(4);
+	glutWireCube(5);
 
-	field->CalculateField();
-
-	/*for (int i = 0; i < particles[1].inFieldCount - 1; i++) {
-		std::cout<<particles[1].inField[i].index;
-	}*/
-	//std::cout<<particles[0].density<<std::endl;
+	field->CalculateField(gravityDirection);
 
 	for (int i = 0; i < particleNum; i++) {
 		particles[i].applyForce();
 		particles[i].draw();
 	}
 	
-	int test = 1;
 	glPushMatrix();
-	GLUquadricObj* quadratic;
-	quadratic =gluNewQuadric();  
-	glTranslatef(particles[test].position.x, particles[test].position.y, particles[test].position.z); 
-	glColor3f(0.0, 0.0, 1.0);
-	//gluSphere(quadratic, 0.5, 200, 160);  
-	glColor3f(0.0, 0, 1.0);
+	drawGravity();
 	glPopMatrix();
+
 
 	glutPostRedisplay();
 }
 
+void drawGravity() {
+	GLfloat DiffuseMaterial[] = {0.0, 1.0, 1.0}; 
+	GLfloat SpecularMaterial[] = {1.0, 1.0, 1.0}; 
+	GLfloat EmissiveMaterial[] = {0.0, 1.0, 1.0};
+	GLfloat mShininess[] = {128};
+
+	int length = 7;
+	glLineWidth(2.5); 
+		glColor3f(1.0, 0.0, 0.0);
+		glBegin(GL_LINES);
+		glVertex3f(0.0, 0.0, 0.0);
+		glVertex3f(length * gravityDirection.x, length * gravityDirection.y, length * gravityDirection.z);
+	glEnd();
+
+	glPushMatrix();
+
+	glMaterialfv(GL_FRONT, GL_SPECULAR, SpecularMaterial);
+    glMaterialfv(GL_FRONT, GL_SHININESS, mShininess);
+	glMaterialfv(GL_FRONT, GL_DIFFUSE, DiffuseMaterial);
+	//glMaterialfv(GL_FRONT, GL_EMISSION, EmissiveMaterial);
+
+	GLUquadricObj* quadratic;
+	quadratic =gluNewQuadric();  
+	glTranslatef(length * gravityDirection.x, length * gravityDirection.y, length * gravityDirection.z); 	 
+	gluSphere(quadratic, 0.5, 10, 10);  
+	glPopMatrix();
+}
 
 int _tmain(int argc, char** argv)
 {

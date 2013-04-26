@@ -10,7 +10,7 @@ public:
 	Field(Particle* particle, float scope, int num);
 	~Field();
 	
-	void CalculateField();
+	void CalculateField(Vector3f direction);
 
 	Vector3f CalculateWgradient(Vector3f r, float h);
 	double CalculateWlaplaceian(Vector3f r, float h);

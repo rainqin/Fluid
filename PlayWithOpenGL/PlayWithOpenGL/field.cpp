@@ -19,7 +19,7 @@ Field::~Field() {
 
 }
 
-void Field::CalculateField() {
+void Field::CalculateField(Vector3f direction) {
 	for (int k = 0; k < particleNum; k++) {
 		p[k].force = make_vector(0.0, 0.0, 0.0);
 		p[k].density = p[k].mass;
@@ -75,7 +75,7 @@ void Field::CalculateField() {
 			p[i].csGradient += p[p[i].inField[j].index].mass / p[p[i].inField[j].index].density * p[i].inField[j].Wgradient; 
 		}
 		p[i].force += -my_sigma * p[i].csLaplaceian * normalize(p[i].csGradient); //surface tension
-		p[i].force -= my_g * make_vector<float>(0.0, 1.0, 0.0) * p[i].mass ;                   //gravity
+		p[i].force += my_g * direction * p[i].mass ;                   //gravity
 	}
 }
 

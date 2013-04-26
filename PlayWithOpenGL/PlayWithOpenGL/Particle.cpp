@@ -27,11 +27,21 @@ Particle::~Particle(){
 }
 
 void Particle::draw() {
+	GLfloat DiffuseMaterial[] = {0.0, 0.0, 1.0}; 
+	GLfloat SpecularMaterial[] = {1.0, 1.0, 1.0}; 
+	GLfloat EmissiveMaterial[] = {0.0, 0.0, 1.0};
+	GLfloat mShininess[] = {128}; 
+
 	glPushMatrix();
+	glMaterialfv(GL_FRONT, GL_SPECULAR, SpecularMaterial);
+    glMaterialfv(GL_FRONT, GL_SHININESS, mShininess);
+	glMaterialfv(GL_FRONT, GL_DIFFUSE, DiffuseMaterial);
+	//glMaterialfv(GL_FRONT, GL_EMISSION, EmissiveMaterial);
+
 	GLUquadricObj* quadratic;
 	quadratic =gluNewQuadric();  
 	glTranslatef(position.x, position.y, position.z); 	 
-	gluSphere(quadratic, 0.25, 10, 10);  
+	gluSphere(quadratic, 0.25, 10, 10); 
 	glPopMatrix();
 }
 
@@ -42,48 +52,59 @@ void Particle::clearInField() {
 }
 
 void Particle::applyForce() {
-	float constraint = 2;
-	Vector3f up = make_vector<float>(0.0, 1.0, 0.0);
+	float constraint = 2.5;
 
 	acc = force / mass;
 
 	velocity += acc * delta_t;
 
-	int vYConstraint = 50;
-	if (velocity.y > vYConstraint) {
-		velocity.y = vYConstraint;
+	int vConstraint = 150;
+	if (velocity.x > vConstraint) {
+		velocity.x  = vConstraint;
+	}
+	if (velocity.y > vConstraint) {
+		velocity.y  = vConstraint;
+	}
+	if (velocity.z > vConstraint) {
+		velocity.z  = vConstraint;
 	}
 	
 	position += velocity * delta_t;
 
+	if (position.y > constraint) {
+		position.y = constraint;
+		velocity.y = -damping * velocity.y;
+		acc.y = 0;
+	}
+
 	if (position.y < -constraint) {
 		position.y = -constraint;
 		velocity.y = -damping * velocity.y;
-		//acc.y = -acc.y;
+		acc.y = 0;
 	}
 
 	if (position.x < -constraint) {
 		position.x = -constraint;
 		velocity.x = -damping * velocity.x;
-		acc.x = -acc.x;
+		acc.x = 0;
 	}
 
 	if (position.x > constraint) {
 		position.x = constraint;
 		velocity.x = -damping * velocity.x;
-		acc.x = -acc.x;
+		acc.x = 0;
 	} 
 	if (position.z < -constraint) {
 		//std::cout<<"Prev: "<<position<<std::endl;
 		position.z = -constraint;
 		velocity.z = -damping * velocity.z;
-		acc.z = -acc.z;
+		acc.z = 0;
 		//std::cout<<"After: "<<position<<std::endl;
 	} 
 	if (position.z > constraint) {
 		position.z = constraint;
 		velocity.z = -damping * velocity.z;
-		acc.z = -acc.z;
+		acc.z =0;
 	}
 
 }
